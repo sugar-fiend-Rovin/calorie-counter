@@ -1,15 +1,10 @@
 const mongoose = require("mongoose");
 const User = mongoose.model("User", {
-    name: {
-      type: String,
-      required: true
-    },
-    email: {
-      type: String,
-      required: true,
-      index: { unique: true }
-    }
-  });
+  name: {
+    type: String,
+    required: true,
+  },
+});
 const Food = mongoose.model("menu-items", {
   food_name: String,
   type: String,
@@ -18,4 +13,4 @@ const Food = mongoose.model("menu-items", {
   proteins: Number,
   fats: Number,
 });
-module.exports = {Food, User};
+module.exports = { Food, User };
