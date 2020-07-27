@@ -4,6 +4,10 @@ const User = mongoose.model("User", {
     type: String,
     required: true,
   },
+  password: {
+    type: String,
+    required: true,
+  },
 });
 const Food = mongoose.model("menu-items", {
   food_name: String,

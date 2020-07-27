@@ -13,6 +13,7 @@ const typeDefs = `type Query {
   }
   type User {
     name: String!
+    password: String!
   }
   type Mutation {
       addFood(

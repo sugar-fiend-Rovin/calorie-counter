@@ -1,0 +1,4 @@
+{
+  "mongoURI": "mongodb+srv://rovin:@food.ycrjs.mongodb.net/food-database?retryWrites=true&w=majority",
+  "jwtSecret": "sl_myJwtSecret"
+}
