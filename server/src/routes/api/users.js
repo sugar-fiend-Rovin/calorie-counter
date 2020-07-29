@@ -27,7 +27,7 @@ router.post("/", (req, res) => {
             { id: user.id },
             config.get("jwtSecret"),
             {
-              expiresIn: 3600,
+              expiresIn: 1800,
             },
             (err, token) => {
               if (err) throw err;

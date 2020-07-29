@@ -11,6 +11,8 @@ mongoose.connect(db, {
   useFindAndModify: false,
   useCreateIndex: true,
 });
+const port = process.env.Port || 5000;
+
 const server = new GraphQLServer({ typeDefs, resolvers });
 
 // server.express.post("/hello", (req, res) => {
@@ -43,7 +45,8 @@ const server = new GraphQLServer({ typeDefs, resolvers });
 //   });
 // });
 server.express.use(express.json());
-server.express.use("/hello", require("./routes/api/users"));
+server.express.use("/api/users", require("./routes/api/users"));
+server.express.use("/api/auth", require("./routes/api/auth"));
 mongoose.connection.once("open", () =>
   server.start(() => console.log("We make magic over at localhost:4000"))
 );

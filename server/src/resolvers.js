@@ -1,4 +1,4 @@
-const Food = require("./models");
+const { User, Food } = require("./models");
 
 const resolvers = {
   Query: {
@@ -8,10 +8,10 @@ const resolvers = {
       return result;
     },
     me(root, args, ctx) {
-        return {
-          name: 'Who am I?'
-        }
-      }
+      return {
+        name: "Who am I?",
+      };
+    },
   },
   Mutation: {
     addFood: async (
