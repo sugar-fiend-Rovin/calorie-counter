@@ -5,7 +5,13 @@ import * as compose from "lodash.flowright";
 import { Query, Mutation, Subscription } from "@apollo/client/react/components";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.css";
-import { FoodQueryS, FoodQuery, AddFood } from "./Food-Query";
+import {
+  EntryQuery,
+  FoodQueryS,
+  FoodQuery,
+  AddFood,
+  AddEntry,
+} from "./Food-Query";
 import FoodItem from "./components/foodItem";
 import moment from "moment";
 import Example from "./components/button";
@@ -13,7 +19,7 @@ export const ItemsContext = React.createContext();
 
 function App() {
   const getAllUsers = useQuery(FoodQuery);
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(moment());
   function handleChange(newValue) {
     setCount(newValue);
   }
@@ -22,14 +28,26 @@ function App() {
       <ItemsContext.Provider value={[count, setCount]}>
         <Example />
       </ItemsContext.Provider>
-      ;
+
+      <Query query={EntryQuery}>
+        {({ loading, error, data }) => {
+          if (loading) return <h4>Loading...</h4>;
+          if (error) console.log(error);
+
+          return (
+            <Fragment>
+              {data.getEntries.map((food) => (
+                <FoodItem key={food.id} Food={food.food_en} />
+              ))}
+            </Fragment>
+          );
+        }}
+      </Query>
       <Query query={FoodQuery}>
         {({ loading, error, data }) => {
           if (loading) return <h4>Loading...</h4>;
           if (error) console.log(error);
-          console.log(count);
-          console.log(moment().format("DD/MM/YYYY"));
-          console.log(moment().subtract(count, "days").format("DD/MM/YYYY"));
+          console.log(count.format("ddd DD-MM-YYYY"));
 
           const breakfast = data.getFoods.filter(
             (food) => food.type === "breakfast"

@@ -3,6 +3,7 @@ const typeDefs = `type Query {
     getFoods: [Food]
     users: [User]
     me: User!
+    getEntries: [Entry]
   }
   type Food {
     food_name: String!,
@@ -17,7 +18,14 @@ const typeDefs = `type Query {
     password: String!
     journal: [Food]
   }
-
+  type Entry {
+      date: String!
+      food_entry: String!
+      food_en: Food
+    }
+  type Journal {
+    entries: [Entry]
+  }
   type Mutation {
       addFood(
         food_name: String!,
@@ -26,10 +34,8 @@ const typeDefs = `type Query {
         carbohydrates: Float!,
         proteins: Float!,
         fats: Float!): Food!,
-      deleteFood(food_name: String!): String
+      deleteFood(food_name: String!): String!
+      addEntry(
+        food_entry: String!, date: Float!): Entry!
   }`;
 module.exports = typeDefs;
-// type DailyJournal {
-//   date: date!
-//   foods: [Food]
-// }

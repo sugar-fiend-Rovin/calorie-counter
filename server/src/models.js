@@ -17,4 +17,10 @@ const Food = mongoose.model("menu-items", {
   proteins: Number,
   fats: Number,
 });
-module.exports = { Food, User };
+const Entry = mongoose.model("entries", {
+  food_entry: String,
+  date: String,
+});
+const Journal = mongoose.model("journals", {});
+
+module.exports = { Food, User, Entry, Journal };
