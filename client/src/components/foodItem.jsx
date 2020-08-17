@@ -1,19 +1,26 @@
 import React from "react";
 // import { Link } from "react-router-dom";
 import { useMutation } from "@apollo/client";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
 import {
   EntryQuery,
+  EntryQueryS,
   FoodQueryS,
   FoodQuery,
   AddFood,
   AddEntry,
+  AddQuantity,
+  MinusQuantity,
 } from "../Food-Query";
 
 export default function FoodItem({
   Food: { food_name, type, calories, carbohydrates, proteins, fats },
 }) {
-  const [addEntry, { data }] = useMutation(AddEntry);
+  const [createEntry, { data }] = useMutation(AddEntry, {
+    refetchQueries: ["EntryQuery"],
+  });
 
   return (
     <div className="row">
@@ -22,13 +29,19 @@ export default function FoodItem({
       <div className="col-sm-2 ">{fats}</div>
       <div className="col-sm-2 ">{proteins}</div>
       <div className="col-sm-2 ">{calories}</div>
+
       <button
         type="button"
         onClick={() =>
-          addEntry({ variables: { food_entry: food_name, date: 43 } })
+          createEntry({
+            variables: { food_entry: food_name, date: "43", quantity: 1 },
+          })
         }
         className="btn btn-primary btn-lg active"
-      ></button>
+      >
+        {" "}
+        <FontAwesomeIcon icon={faPlus} />
+      </button>
     </div>
   );
 }

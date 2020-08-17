@@ -17,6 +17,7 @@ const EntryQuery = gql`
     getEntries {
       food_entry
       date
+      quantity
       food_en {
         food_name
         type
@@ -37,6 +38,23 @@ const FoodQuery = gql`
       carbohydrates
       proteins
       fats
+    }
+  }
+`;
+const EntryQueryS = gql`
+  query($name: String!) {
+    getEntry(food_entry: $name) {
+      food_entry
+      date
+      quantity
+      food_en {
+        food_name
+        type
+        calories
+        carbohydrates
+        proteins
+        fats
+      }
     }
   }
 `;
@@ -67,11 +85,39 @@ const AddFood = gql`
   }
 `;
 const AddEntry = gql`
-  mutation($food_entry: String!, $date: Float!) {
-    addEntry(food_entry: $food_entry, date: $date) {
+  mutation($food_entry: String!, $date: String!, $quantity: Float!) {
+    createEntry(food_entry: $food_entry, date: $date, quantity: $quantity) {
       food_entry
       date
+      quantity
     }
   }
 `;
-export { EntryQuery, FoodQueryS, FoodQuery, AddFood, AddEntry };
+const AddQuantity = gql`
+  mutation($food_entry: String!) {
+    updateEntryPlus(food_entry: $food_entry) {
+      food_entry
+      date
+      quantity
+    }
+  }
+`;
+const MinusQuantity = gql`
+  mutation($food_entry: String!) {
+    updateEntryMinus(food_entry: $food_entry) {
+      food_entry
+      date
+      quantity
+    }
+  }
+`;
+export {
+  EntryQuery,
+  FoodQueryS,
+  FoodQuery,
+  AddFood,
+  AddEntry,
+  AddQuantity,
+  MinusQuantity,
+  EntryQueryS,
+};
