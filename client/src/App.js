@@ -5,17 +5,7 @@ import * as compose from "lodash.flowright";
 import { Query, Mutation, Subscription } from "@apollo/client/react/components";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.css";
-import {
-  EntryQuery,
-  EntryQueryS,
-  FoodQueryS,
-  FoodQuery,
-  AddFood,
-  AddEntry,
-  AddQuantity,
-  MinusQuantity,
-  DeleteEntry,
-} from "./Food-Query";
+import { EntryQuery, FoodQuery } from "./Food-Query";
 import FoodItem from "./components/foodItem";
 import moment from "moment";
 import Example from "./components/button";
@@ -74,7 +64,6 @@ function App() {
           );
         }}
       </Query> */}
-      console.log(getJournal())
       <Query query={FoodQuery} pollInterval={0.0001}>
         {({ loading, error, data }) => {
           if (loading) return <h4>Loading...</h4>;
@@ -165,7 +154,11 @@ function App() {
               </div>
               ;
               {breakfast.map((food) => (
-                <FoodItem key={food.id} Food={food} />
+                <FoodItem
+                  key={food.id}
+                  Food={food}
+                  date={count.format("MM-DD-YYYY")}
+                />
               ))}
               {/* <div
                 className="row text-white"
@@ -178,7 +171,11 @@ function App() {
                 <div className="col-sm-2">{lunch_sum}</div>
               </div> */}
               {lunch.map((food) => (
-                <FoodItem key={food.id} Food={food} />
+                <FoodItem
+                  key={food.id}
+                  Food={food}
+                  date={count.format("MM-DD-YYYY")}
+                />
               ))}
               {/* <div
                 className="row text-white"
@@ -191,7 +188,11 @@ function App() {
                 <div className="col-sm-2">{dinner_sum}</div>
               </div> */}
               {dinner.map((food) => (
-                <FoodItem key={food.id} Food={food} />
+                <FoodItem
+                  key={food.id}
+                  Food={food}
+                  date={count.format("MM-DD-YYYY")}
+                />
               ))}
             </Fragment>
           );

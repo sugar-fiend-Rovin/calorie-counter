@@ -19,12 +19,12 @@ function Example(props) {
   function increment() {
     // Here, we invoke the callback with the new value
     setCount(moment(count).subtract(-1, "days"));
-    console.log(count.format("DD-MM-YYYY"));
+    console.log(count.format("MM-DD-YYYY"));
   }
   function decrement() {
     // Here, we invoke the callback with the new value
     setCount(moment(count).subtract(1, "days"));
-    console.log(count.format("DD-MM-YYYY"));
+    console.log(count.format("MM-DD-YYYY"));
   }
   function pop() {
     return <Calendar />;
@@ -45,7 +45,7 @@ function Example(props) {
         <Popup
           trigger={
             <button type="button" className="btn btn-primary btn-lg active">
-              {count.format("ddd DD-MM-YYYY")}
+              {count.format("ddd MM-DD-YYYY")}
             </button>
           }
           position="bottom center"

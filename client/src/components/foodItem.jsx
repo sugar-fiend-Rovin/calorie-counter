@@ -1,6 +1,9 @@
 import React from "react";
 // import { Link } from "react-router-dom";
-import { useMutation } from "@apollo/client";
+import { useMutation, useContext } from "@apollo/client";
+import moment from "moment";
+import { ItemsContext } from "./../App";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
@@ -18,6 +21,7 @@ import {
 
 export default function FoodItem({
   Food: { food_name, type, calories, carbohydrates, proteins, fats },
+  date,
 }) {
   const [createEntry, { data }] = useMutation(AddEntry, {
     refetchQueries: ["EntryQuery"],
@@ -35,7 +39,11 @@ export default function FoodItem({
         type="button"
         onClick={() =>
           createEntry({
-            variables: { food_entry: food_name, date: "43", quantity: 1 },
+            variables: {
+              food_entry: food_name,
+              date: date,
+              quantity: 1,
+            },
           })
         }
         className="btn btn-primary btn-lg active"
