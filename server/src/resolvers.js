@@ -73,9 +73,6 @@ const resolvers = {
     updateEntryMinus: async (_, { food_entry }) => {
       //add date later
       // await Entry.update({ foods: [food, ...foods] });
-      const check = Entry.findOne({ food_entry: food_entry });
-      if (check.quantity === 0) {
-      }
       return await Entry.findOneAndUpdate(
         { food_entry: food_entry },
         { $inc: { quantity: -1 } },
@@ -83,6 +80,10 @@ const resolvers = {
           new: true,
         }
       );
+    },
+    deleteEntry: async (_, { food_entry }) => {
+      await Entry.deleteOne({ food_entry: food_entry });
+      return "Food deleted";
     },
   },
 };

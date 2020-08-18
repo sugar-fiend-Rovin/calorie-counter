@@ -13,6 +13,7 @@ import {
   AddEntry,
   AddQuantity,
   MinusQuantity,
+  DeleteEntry,
 } from "../Food-Query";
 
 export default function FoodItem({

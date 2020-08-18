@@ -12,18 +12,39 @@ import {
   AddEntry,
   AddQuantity,
   MinusQuantity,
+  DeleteEntry,
 } from "../Food-Query";
 
 export default function JournalItem({
   Food: { food_name, type, calories, carbohydrates, proteins, fats },
   count,
 }) {
-  const [addQuantity, { data }] = useMutation(AddQuantity, {
+  var q = 1;
+  const [deleteEntry, { data3 }] = useMutation(DeleteEntry, {
     refetchQueries: ["EntryQuery"],
   });
-  const [minusQuantity, { data2 }] = useMutation(MinusQuantity, {
+  const [addQuantity, { data2 }] = useMutation(AddQuantity, {
     refetchQueries: ["EntryQuery"],
   });
+  const [minusQuantity, { data }] = useMutation(
+    MinusQuantity,
+    {
+      update: (cache, qe) => {
+        q = qe.data.updateEntryMinus.quantity;
+
+        console.log(qe.data.updateEntryMinus.food_entry);
+        if (qe.data.updateEntryMinus.quantity === 0) {
+          console.log("completed");
+          deleteEntry({
+            variables: { food_entry: qe.data.updateEntryMinus.food_entry },
+          });
+        }
+      },
+    },
+    {
+      refetchQueries: ["EntryQuery"],
+    }
+  );
 
   return (
     <div className="row">

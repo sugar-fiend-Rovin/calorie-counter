@@ -12,6 +12,7 @@ import {
   AddEntry,
   AddQuantity,
   MinusQuantity,
+  DeleteEntry,
 } from "../Food-Query";
 
 import JournalItem from "./journalItem";

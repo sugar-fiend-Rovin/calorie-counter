@@ -39,5 +39,7 @@ const typeDefs = `type Query {
         food_entry: String!): Entry!
       updateEntryMinus(
         food_entry: String!): Entry!
+      deleteEntry(food_entry: String!): String!
+
       }`;
 module.exports = typeDefs;

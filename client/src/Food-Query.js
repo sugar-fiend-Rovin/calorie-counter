@@ -93,6 +93,11 @@ const AddEntry = gql`
     }
   }
 `;
+const DeleteEntry = gql`
+  mutation($food_entry: String!) {
+    deleteEntry(food_entry: $food_entry)
+  }
+`;
 const AddQuantity = gql`
   mutation($food_entry: String!) {
     updateEntryPlus(food_entry: $food_entry) {
@@ -120,4 +125,5 @@ export {
   AddQuantity,
   MinusQuantity,
   EntryQueryS,
+  DeleteEntry,
 };

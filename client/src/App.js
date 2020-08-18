@@ -14,6 +14,7 @@ import {
   AddEntry,
   AddQuantity,
   MinusQuantity,
+  DeleteEntry,
 } from "./Food-Query";
 import FoodItem from "./components/foodItem";
 import moment from "moment";
@@ -52,7 +53,6 @@ function App() {
   if (error) return `Error! ${error}`;
 
   const newarray = data.getEntries.map((entry) => entry.food_en.food_name);
-  console.log(newarray);
   return (
     //refetch
     <div className="App">
