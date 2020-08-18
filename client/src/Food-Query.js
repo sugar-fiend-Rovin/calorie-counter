@@ -13,8 +13,8 @@ const FoodQueryS = gql`
   }
 `;
 const EntryQuery = gql`
-  query {
-    getEntries {
+  query($date: String!) {
+    getEntries(date: $date) {
       food_entry
       date
       quantity
@@ -94,13 +94,13 @@ const AddEntry = gql`
   }
 `;
 const DeleteEntry = gql`
-  mutation($food_entry: String!) {
-    deleteEntry(food_entry: $food_entry)
+  mutation($food_entry: String!, $date: String!) {
+    deleteEntry(food_entry: $food_entry, date: $date)
   }
 `;
 const AddQuantity = gql`
-  mutation($food_entry: String!) {
-    updateEntryPlus(food_entry: $food_entry) {
+  mutation($food_entry: String!, $date: String!) {
+    updateEntryPlus(food_entry: $food_entry, date: $date) {
       food_entry
       date
       quantity
@@ -108,8 +108,8 @@ const AddQuantity = gql`
   }
 `;
 const MinusQuantity = gql`
-  mutation($food_entry: String!) {
-    updateEntryMinus(food_entry: $food_entry) {
+  mutation($food_entry: String!, $date: String!) {
+    updateEntryMinus(food_entry: $food_entry, date: $date) {
       food_entry
       date
       quantity

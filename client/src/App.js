@@ -36,7 +36,8 @@ function App() {
   // add usernmae as paramter
 
   const { loading, error, data } = useQuery(EntryQuery, {
-    pollInterval: 0.001,
+    variables: { date: count.format("MM-DD-YYYY") },
+    pollInterval: 0.0001,
   });
 
   if (loading) return null;
@@ -48,8 +49,9 @@ function App() {
     <div className="App">
       <ItemsContext.Provider value={[count, setCount]}>
         <Example />
+        <Journal />
       </ItemsContext.Provider>
-      <Journal />
+
       {/* <Query query={EntryQuery}>
         {({ loading, error, data }) => {
           if (loading) return <h4>Loading...</h4>;

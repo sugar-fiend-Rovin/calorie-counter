@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useContext } from "react";
 import { graphql } from "@apollo/client/react/hoc";
 import * as compose from "lodash.flowright";
 import { Query, Mutation, Subscription } from "@apollo/client/react/components";
@@ -14,17 +14,23 @@ import {
   MinusQuantity,
   DeleteEntry,
 } from "../Food-Query";
-
+import moment from "moment";
+import { ItemsContext } from "./../App";
 import JournalItem from "./journalItem";
 function Journal(props) {
+  const [count, setCount] = useContext(ItemsContext);
+
   const { loading, error, data } = useQuery(EntryQuery, {
+    variables: { date: count.format("MM-DD-YYYY") },
     pollInterval: 0.0001,
   });
 
   if (loading) return "Loading...";
   if (error) return `Error! ${error.message}`;
   const breakfast = data.getEntries.filter(
-    (food) => food.food_en.type === "breakfast"
+    (food) =>
+      food.food_en.type === "breakfast" &&
+      food.date === count.format("MM-DD-YYYY")
   );
   const breakfast_sum = breakfast.reduce(function (result, item) {
     return result + item.food_en.calories * item.quantity;
@@ -87,6 +93,7 @@ function Journal(props) {
           key={food.food_en.id}
           Food={food.food_en}
           count={food.quantity}
+          date={count.format("MM-DD-YYYY")}
         />
       ))}
       <div className="row text-white" style={{ backgroundColor: "blue" }}>
@@ -102,6 +109,7 @@ function Journal(props) {
           key={food.food_en.id}
           Food={food.food_en}
           count={food.quantity}
+          date={count.format("MM-DD-YYYY")}
         />
       ))}
       <div className="row text-white" style={{ backgroundColor: "blue" }}>
@@ -117,6 +125,7 @@ function Journal(props) {
           key={food.food_en.id}
           Food={food.food_en}
           count={food.quantity}
+          date={count.format("MM-DD-YYYY")}
         />
       ))}
     </Fragment>

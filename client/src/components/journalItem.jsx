@@ -18,8 +18,8 @@ import {
 export default function JournalItem({
   Food: { food_name, type, calories, carbohydrates, proteins, fats },
   count,
+  date,
 }) {
-  var q = 1;
   const [deleteEntry, { data3 }] = useMutation(DeleteEntry, {
     refetchQueries: ["EntryQuery"],
   });
@@ -30,13 +30,14 @@ export default function JournalItem({
     MinusQuantity,
     {
       update: (cache, qe) => {
-        q = qe.data.updateEntryMinus.quantity;
-
         console.log(qe.data.updateEntryMinus.food_entry);
         if (qe.data.updateEntryMinus.quantity === 0) {
           console.log("completed");
           deleteEntry({
-            variables: { food_entry: qe.data.updateEntryMinus.food_entry },
+            variables: {
+              food_entry: qe.data.updateEntryMinus.food_entry,
+              date: date,
+            },
           });
         }
       },
@@ -56,7 +57,9 @@ export default function JournalItem({
       <div className="col-sm-1 ">{count}</div>
       <button
         type="button"
-        onClick={() => minusQuantity({ variables: { food_entry: food_name } })}
+        onClick={() =>
+          minusQuantity({ variables: { food_entry: food_name, date: date } })
+        }
         className="btn btn-primary btn-lg active"
       >
         {" "}
@@ -64,7 +67,9 @@ export default function JournalItem({
       </button>
       <button
         type="button"
-        onClick={() => addQuantity({ variables: { food_entry: food_name } })}
+        onClick={() =>
+          addQuantity({ variables: { food_entry: food_name, date: date } })
+        }
         className="btn btn-primary btn-lg active"
       >
         {" "}

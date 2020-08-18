@@ -6,7 +6,10 @@ const resolvers = {
       var result = await Journal.findOne({ date: date });
       return result;
     },
-    getEntries: () => Entry.find(),
+    getEntries: async (_, { date }) => {
+      var result = await Entry.find({ date: date });
+      return result;
+    },
     getFoods: () => Food.find(),
     getFood: async (_, { food_name }) => {
       var result = await Food.findOne({ food_name: food_name });
@@ -59,30 +62,30 @@ const resolvers = {
       await entry.save();
       return entry;
     },
-    updateEntryPlus: async (_, { food_entry }) => {
+    updateEntryPlus: async (_, { food_entry, date }) => {
       //add date later
       // await Entry.update({ foods: [food, ...foods] });
       return await Entry.findOneAndUpdate(
-        { food_entry: food_entry },
+        { food_entry: food_entry, date: date },
         { $inc: { quantity: 1 } },
         {
           new: true,
         }
       );
     },
-    updateEntryMinus: async (_, { food_entry }) => {
+    updateEntryMinus: async (_, { food_entry, date }) => {
       //add date later
       // await Entry.update({ foods: [food, ...foods] });
       return await Entry.findOneAndUpdate(
-        { food_entry: food_entry },
+        { food_entry: food_entry, date: date },
         { $inc: { quantity: -1 } },
         {
           new: true,
         }
       );
     },
-    deleteEntry: async (_, { food_entry }) => {
-      await Entry.deleteOne({ food_entry: food_entry });
+    deleteEntry: async (_, { food_entry, date }) => {
+      await Entry.deleteOne({ food_entry: food_entry, date: date });
       return "Food deleted";
     },
   },

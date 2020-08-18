@@ -3,7 +3,7 @@ const typeDefs = `type Query {
     getFoods: [Food]
     getJournals: [Journal]
     getJournal: Journal!
-    getEntries: [Entry]
+    getEntries(date:String!): [Entry]
   }
   type Food {
     food_name: String!,
@@ -36,10 +36,10 @@ const typeDefs = `type Query {
       createEntry(
         date: String!, food_entry: String!, quantity: Float!): Entry!
       updateEntryPlus(
-        food_entry: String!): Entry!
+        food_entry: String!, date: String!): Entry!
       updateEntryMinus(
-        food_entry: String!): Entry!
-      deleteEntry(food_entry: String!): String!
+        food_entry: String!, date: String!): Entry!
+      deleteEntry(food_entry: String!, date: String!): String!
 
       }`;
 module.exports = typeDefs;
