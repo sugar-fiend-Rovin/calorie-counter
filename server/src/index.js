@@ -5,7 +5,8 @@ const config = require("config");
 const mongoose = require("mongoose");
 const express = require("express");
 const db = config.get("mongoURI");
-
+const jwt = require("express-jwt");
+const { AuthenticationError } = require("apollo-server");
 mongoose.connect(db, {
   useNewUrlParser: true,
   useFindAndModify: false,
@@ -13,8 +14,19 @@ mongoose.connect(db, {
 });
 const port = process.env.Port || 5000;
 
-const server = new GraphQLServer({ typeDefs, resolvers });
-
+const server = new GraphQLServer({
+  typeDefs,
+  resolvers,
+  context: (req) => {
+    return {
+      accesstoken: GetAccessToken(req.request),
+    };
+  },
+});
+const GetAccessToken = function (request) {
+  const token = (request.headers.authorization || "").replace("BEARER ", "");
+  return token;
+};
 // server.express.post("/hello", (req, res) => {
 //   console.log(req.body);
 //   const { name, password } = req.body;
@@ -44,9 +56,7 @@ const server = new GraphQLServer({ typeDefs, resolvers });
 //     });
 //   });
 // });
-server.express.use(express.json());
-server.express.use("/api/users", require("./routes/api/users"));
-server.express.use("/api/auth", require("./routes/api/auth"));
+server.use(express.json());
 mongoose.connection.once("open", () =>
   server.start(() => console.log("We make magic over at localhost:4000"))
 );

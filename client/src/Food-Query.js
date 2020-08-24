@@ -12,9 +12,17 @@ const FoodQueryS = gql`
     }
   }
 `;
+const UserQuery = gql`
+  query($name: String!) {
+    getUser(username: $name) {
+      username
+    }
+  }
+`;
 const EntryQuery = gql`
   query($date: String!) {
     getEntries(date: $date) {
+      username
       food_entry
       date
       quantity
@@ -41,23 +49,23 @@ const FoodQuery = gql`
     }
   }
 `;
-const EntryQueryS = gql`
-  query($name: String!) {
-    getEntry(food_entry: $name) {
-      food_entry
-      date
-      quantity
-      food_en {
-        food_name
-        type
-        calories
-        carbohydrates
-        proteins
-        fats
-      }
-    }
-  }
-`;
+// const EntryQueryS = gql`
+//   query($name: String!) {
+//     getEntry(food_entry: $name) {
+//       food_entry
+//       date
+//       quantity
+//       food_en {
+//         food_name
+//         type
+//         calories
+//         carbohydrates
+//         proteins
+//         fats
+//       }
+//     }
+//   }
+// `;
 const AddFood = gql`
   mutation(
     $food_name: String!
@@ -93,6 +101,13 @@ const AddEntry = gql`
     }
   }
 `;
+const AddUser = gql`
+  mutation($name: String!) {
+    addUser(username: $name) {
+      username
+    }
+  }
+`;
 const DeleteEntry = gql`
   mutation($food_entry: String!, $date: String!) {
     deleteEntry(food_entry: $food_entry, date: $date)
@@ -107,6 +122,7 @@ const AddQuantity = gql`
     }
   }
 `;
+
 const MinusQuantity = gql`
   mutation($food_entry: String!, $date: String!) {
     updateEntryMinus(food_entry: $food_entry, date: $date) {
@@ -116,14 +132,50 @@ const MinusQuantity = gql`
     }
   }
 `;
+const LOGIN_USER = gql`
+  mutation login($username: String!, $password: String!) {
+    login(username: $username, password: $password) {
+      id
+      email
+      username
+      token
+    }
+  }
+`;
+const REGISTER_USER = gql`
+  mutation register(
+    $username: String!
+    $email: String!
+    $password: String!
+    $confirmPassword: String!
+  ) {
+    register(
+      registerInput: {
+        username: $username
+        email: $email
+        password: $password
+        confirmPassword: $confirmPassword
+      }
+    ) {
+      id
+      email
+      username
+      token
+    }
+  }
+`;
 export {
+  AddUser,
   EntryQuery,
+  UserQuery,
   FoodQueryS,
   FoodQuery,
   AddFood,
   AddEntry,
   AddQuantity,
   MinusQuantity,
-  EntryQueryS,
+  // EntryQueryS,
   DeleteEntry,
+  LOGIN_USER,
+  REGISTER_USER,
 };

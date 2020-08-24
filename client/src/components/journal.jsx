@@ -15,7 +15,7 @@ import {
   DeleteEntry,
 } from "../Food-Query";
 import moment from "moment";
-import { ItemsContext } from "./../App";
+import { ItemsContext } from "./home";
 import JournalItem from "./journalItem";
 function Journal(props) {
   const [count, setCount] = useContext(ItemsContext);
