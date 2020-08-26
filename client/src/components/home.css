@@ -1,0 +1,7 @@
+.border-col {
+  border: 1px dotted grey;
+  border-bottom: 0;
+}
+.border-col:last-child {
+  border: 1px dotted grey;
+}

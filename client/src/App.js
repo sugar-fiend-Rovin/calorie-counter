@@ -15,23 +15,27 @@ import Journal from "./components/journal";
 import Login from "./components/login";
 import Header from "./components/Header";
 import Register from "./components/register";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Home from "./components/home";
-import { Route, Switch } from "react-router-dom";
 import "semantic-ui-css/semantic.min.css";
-
+import { AuthProvider } from "./context/auth";
+import AuthRoute from "./util/AuthRoute";
+import { Container } from "react-bootstrap";
+import Chart from "./components/chart";
 export const ItemsContext = React.createContext();
 export const JournalContext = React.createContext();
 
 function App() {
   return (
     <BrowserRouter>
-      <div className="container">
-        <Header />
-        <Route exact path="/" component={Home} />
-        <Route exact path="/login" component={Login} />
-        <Route exact path="/register" component={Register} />
-      </div>
+      <Container className="pt-5">
+        <Switch>
+          <Route exact path="/" component={Home} />
+          <Route path="/register" component={Register} />
+          <Route path="/login" component={Login} />
+          <Route path="/chart" component={Chart} />
+        </Switch>
+      </Container>
     </BrowserRouter>
   );
 }

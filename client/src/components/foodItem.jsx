@@ -3,21 +3,12 @@ import React from "react";
 import { useMutation, useContext } from "@apollo/client";
 import moment from "moment";
 import { ItemsContext } from "./../App";
-
+import ListGroup from "react-bootstrap/ListGroup";
+import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
-
-import {
-  EntryQuery,
-  EntryQueryS,
-  FoodQueryS,
-  FoodQuery,
-  AddFood,
-  AddEntry,
-  AddQuantity,
-  MinusQuantity,
-  DeleteEntry,
-} from "../Food-Query";
+import { faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
+import "./foodItem.css";
+import { AddEntry } from "../Food-Query";
 
 export default function FoodItem({
   Food: { food_name, type, calories, carbohydrates, proteins, fats },
@@ -28,29 +19,33 @@ export default function FoodItem({
   });
 
   return (
-    <div className="row">
-      <div className="col-sm-2 ">{food_name}</div>
-      <div className="col-sm-2 ">{carbohydrates}</div>
-      <div className="col-sm-2 ">{fats}</div>
-      <div className="col-sm-2 ">{proteins}</div>
-      <div className="col-sm-2 ">{calories}</div>
-
-      <button
-        type="button"
-        onClick={() =>
-          createEntry({
-            variables: {
-              food_entry: food_name,
-              date: date,
-              quantity: 1,
-            },
-          })
-        }
-        className="btn btn-primary btn-lg active"
-      >
-        {" "}
-        <FontAwesomeIcon icon={faPlus} />
-      </button>
-    </div>
+    <Row className=" align-items-center border-col " style={{ height: "50px" }}>
+      <Col>{food_name}</Col>
+      <Col>{carbohydrates}</Col>
+      <Col>{fats}</Col>
+      <Col>{proteins}</Col>
+      <Col>{calories}</Col>
+      <Col>
+        <Button
+          variant="primary"
+          onClick={() =>
+            createEntry({
+              variables: {
+                food_entry: food_name,
+                date: date,
+                quantity: 1,
+              },
+              context: {
+                headers: {
+                  authentication: `Bearer ${localStorage.getItem("token")}`,
+                },
+              },
+            })
+          }
+        >
+          <FontAwesomeIcon icon={faPlus} />
+        </Button>
+      </Col>
+    </Row>
   );
 }

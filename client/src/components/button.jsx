@@ -30,7 +30,7 @@ function Example(props) {
     return <Calendar />;
   }
   return (
-    <div>
+    <div style={{ marginBottom: "30px" }}>
       <ButtonGroup aria-label="Basic example">
         <button
           type="button"

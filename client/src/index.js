@@ -4,7 +4,12 @@ import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { ApolloClient, split, HttpLink, ApolloProvider } from "@apollo/client";
+import {
+  ApolloClient,
+  split,
+  createHttpLink,
+  ApolloProvider,
+} from "@apollo/client";
 import { WebSocketLink } from "@apollo/client/link/ws";
 import { getMainDefinition } from "@apollo/client/utilities";
 import { InMemoryCache } from "@apollo/client/cache";

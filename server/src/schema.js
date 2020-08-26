@@ -1,8 +1,9 @@
 const typeDefs = `type Query {
     getFood(    food_name: String!): Food
-    getFoods: [Food]
+    getFoods: [Food]!
     getUser: String!
     getEntries(date:String!): [Entry]
+    login(username: String! password: String!): User!
   }
   type User {
     id: ID!
@@ -48,11 +49,15 @@ const typeDefs = `type Query {
       createEntry(
         date: String!, food_entry: String!, quantity: Float!): Entry!
       updateEntryPlus(
-        food_entry: String!, date: String!): Entry!
+        food_entry: String!, date: String!): Entry
       updateEntryMinus(
-        food_entry: String!, date: String!): Entry!
+        food_entry: String!, date: String!): Entry
       deleteEntry(food_entry: String!, date: String!): String!
-      register(registerInput: RegisterInput): User!
-      login(username: String!, password: String!): User!
+      register(
+        username: String!
+        email: String!
+        password: String!
+        confirmPassword: String!
+      ): User!
       }`;
 module.exports = typeDefs;

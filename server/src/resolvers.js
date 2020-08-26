@@ -2,11 +2,8 @@ const { Food, User, Entry } = require("./models");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const config = require("config");
-const {
-  validateRegisterInput,
-  validateLoginInput,
-} = require("./util/validators");
-const checkAuth = require("./util/check-auth");
+
+const { AuthenticationError } = require("apollo-server");
 
 const { UserInputError } = require("apollo-server");
 
@@ -24,18 +21,75 @@ function generateToken(user) {
 }
 const resolvers = {
   Query: {
-    getEntries: async (_, { date }) => {
-      const user = checkAuth(context);
+    getEntries: async (_, { date }, user) => {
+      try {
+        if (!user) throw new AuthenticationError("Unauthenticated");
 
-      var result = await Entry.find({ username: user.username, date: date });
-      return result;
+        var result = await Entry.find({
+          username: user.user.username,
+          date: date,
+        });
+        return result;
+      } catch (err) {
+        throw err;
+      }
     },
 
-    getFoods: () => Food.find(),
+    getFoods: async (_, __, user) => {
+      try {
+        if (!user) throw new AuthenticationError("Unauthenticated");
 
+        return Food.find();
+      } catch (err) {
+        console.log(err);
+        throw err;
+      }
+    },
     getFood: async (_, { food_name }) => {
       var result = await Food.findOne({ food_name: food_name });
       return result;
+    },
+    login: async (_, args) => {
+      const { username, password } = args;
+      let errors = {};
+
+      try {
+        if (username.trim() === "")
+          errors.username = "username must not be empty";
+        if (password === "") errors.password = "password must not be empty";
+
+        if (Object.keys(errors).length > 0) {
+          throw new UserInputError("bad input", { errors });
+        }
+
+        const user = await User.findOne({
+          username,
+        });
+
+        if (!user) {
+          errors.username = "user not found";
+          throw new UserInputError("user not found", { errors });
+        }
+
+        const correctPassword = await bcrypt.compare(password, user.password);
+
+        if (!correctPassword) {
+          errors.password = "password is incorrect";
+          throw new UserInputError("password is incorrect", { errors });
+        }
+
+        const token = jwt.sign({ username }, config.get("jwtSecret"), {
+          expiresIn: 60 * 60,
+        });
+
+        return {
+          ...user.toJSON(),
+          token,
+        };
+      } catch (err) {
+        console.log(err);
+        throw err;
+      }
     },
   },
 
@@ -65,121 +119,127 @@ const resolvers = {
       await Food.findByIdAndRemove(id);
       return "Food deleted";
     },
-    createEntry: async (_, { date, food_entry, quantity }, context) => {
-      const user = checkAuth(context);
-      console.log(user);
-      const entry = new Entry({
-        username: user.username,
-        date,
-        food_entry,
-        quantity,
-      });
-      await entry.save();
-      return entry;
-    },
-    deleteEntry: async (_, { username, food_entry, date }) => {
-      const user = checkAuth(context);
+    createEntry: async (_, { date, food_entry, quantity }, user) => {
+      try {
+        if (!user) throw new AuthenticationError("Unauthenticated");
 
-      await Entry.deleteOne({
-        username: user.username,
-        food_entry: food_entry,
-        date: date,
-      });
-      return "Food deleted";
+        const entry = new Entry({
+          username: user.user.username,
+          date,
+          food_entry,
+          quantity,
+        });
+        await entry.save();
+        return entry;
+      } catch (err) {
+        console.log(err);
+        throw err;
+      }
     },
-    updateEntryPlus: async (_, { username, food_entry, date }) => {
-      const user = checkAuth(context);
+    deleteEntry: async (_, { food_entry, date }, user) => {
+      try {
+        if (!user) throw new AuthenticationError("Unauthenticated");
 
-      return await Entry.findOneAndUpdate(
-        { username: user.username, food_entry: food_entry, date: date },
-        { $inc: { quantity: 1 } },
-        {
-          new: true,
-        }
-      );
+        await Entry.deleteOne({
+          username: user.user.username,
+          food_entry: food_entry,
+          date: date,
+        });
+        return "food deleted";
+      } catch (err) {
+        console.log(err);
+        throw err;
+      }
     },
-    updateEntryMinus: async (_, { username, food_entry, date }) => {
-      const user = checkAuth(context);
 
-      return await Entry.findOneAndUpdate(
-        { username: user.username, food_entry: food_entry, date: date },
-        { $inc: { quantity: -1 } },
-        {
-          new: true,
-        }
-      );
+    updateEntryPlus: async (_, { username, food_entry, date }, user) => {
+      try {
+        if (!user) throw new AuthenticationError("Unauthenticated");
+
+        return await Entry.findOneAndUpdate(
+          { username: user.user.username, food_entry: food_entry, date: date },
+          { $inc: { quantity: 1 } },
+          {
+            new: true,
+          }
+        );
+      } catch (err) {
+        console.log(err);
+        throw err;
+      }
+    },
+
+    updateEntryMinus: async (_, { username, food_entry, date }, user) => {
+      try {
+        if (!user) throw new AuthenticationError("Unauthenticated");
+
+        return await Entry.findOneAndUpdate(
+          { username: user.user.username, food_entry: food_entry, date: date },
+          { $inc: { quantity: -1 } },
+          {
+            new: true,
+          }
+        );
+      } catch (err) {
+        console.log(err);
+        throw err;
+      }
     },
 
     // Handle user signup
-    login: async (_, { username, password }) => {
-      const { errors, valid } = validateLoginInput(username, password);
 
-      if (!valid) {
-        throw new UserInputError("Errors", { errors });
-      }
+    register: async (_, args) => {
+      let { username, email, password, confirmPassword } = args;
+      let errors = {};
 
-      const user = await User.findOne({ username });
+      try {
+        // Validate input data
+        if (email.trim() === "") errors.email = "email must not be empty";
+        if (username.trim() === "")
+          errors.username = "username must not be empty";
+        if (password.trim() === "")
+          errors.password = "password must not be empty";
+        if (confirmPassword.trim() === "")
+          errors.confirmPassword = "repeat password must not be empty";
 
-      if (!user) {
-        errors.general = "User not found";
-        throw new UserInputError("User not found", { errors });
-      }
+        if (password !== confirmPassword)
+          errors.confirmPassword = "passwords must match";
 
-      const match = await bcrypt.compare(password, user.password);
-      if (!match) {
-        errors.general = "Wrong crendetials";
-        throw new UserInputError("Wrong crendetials", { errors });
-      }
+        // // Check if username / email exists
+        // const userByUsername = await User.findOne({ where: { username } })
+        // const userByEmail = await User.findOne({ where: { email } })
 
-      const token = generateToken(user);
+        // if (userByUsername) errors.username = 'Username is taken'
+        // if (userByEmail) errors.email = 'Email is taken'
 
-      return {
-        ...user._doc,
-        id: user._id,
-        token,
-      };
-    },
-    register: async (
-      _,
-      { registerInput: { username, email, password, confirmPassword } }
-    ) => {
-      // Validate user data
-      const { valid, errors } = validateRegisterInput(
-        username,
-        email,
-        password,
-        confirmPassword
-      );
-      if (!valid) {
-        throw new UserInputError("Errors", { errors });
-      }
-      // TODO: Make sure user doesnt already exist
-      const user = await User.findOne({ username });
-      if (user) {
-        throw new UserInputError("Username is taken", {
-          errors: {
-            username: "This username is taken",
-          },
+        if (Object.keys(errors).length > 0) {
+          throw errors;
+        }
+
+        // Hash password
+        password = await bcrypt.hash(password, 6);
+
+        // Create user
+        const user = await User.create({
+          username,
+          email,
+          password,
         });
+
+        // Return user
+        return user;
+      } catch (err) {
+        if (err.name === "MongoError" && err.code === 11000) {
+          errors[Object.keys(err.keyValue)[0]] = `${
+            Object.keys(err.keyValue)[0]
+          } is already taken`;
+        } else if (err.name === "ValidationError") {
+          errors[
+            err.errors.email.properties.path
+          ] = `${err.errors.email.properties.message}`;
+        }
+        throw new UserInputError("Bad input", { errors });
       }
-      // hash password and create an auth token
-      password = await bcrypt.hash(password, 12);
-
-      const newUser = new User({
-        email,
-        username,
-        password,
-      });
-
-      const res = await newUser.save();
-
-      const token = generateToken(res);
-
-      return {
-        ...res._doc,
-        id: res._id,
-        token,
-      };
     },
   },
 };

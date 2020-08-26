@@ -132,16 +132,17 @@ const MinusQuantity = gql`
     }
   }
 `;
-const LOGIN_USER = gql`
-  mutation login($username: String!, $password: String!) {
-    login(username: $username, password: $password) {
-      id
-      email
-      username
-      token
-    }
-  }
-`;
+// const LOGIN_USER = gql`
+//   mutation login($username: String!, $password: String!) {
+//     login(username: $username, password: $password) {
+//       id
+//       email
+//       username
+//       token
+//     }
+//   }
+// `;
+
 const REGISTER_USER = gql`
   mutation register(
     $username: String!
@@ -150,16 +151,22 @@ const REGISTER_USER = gql`
     $confirmPassword: String!
   ) {
     register(
-      registerInput: {
-        username: $username
-        email: $email
-        password: $password
-        confirmPassword: $confirmPassword
-      }
+      username: $username
+      email: $email
+      password: $password
+      confirmPassword: $confirmPassword
     ) {
-      id
-      email
       username
+      email
+    }
+  }
+`;
+const LOGIN_USER = gql`
+  query login($username: String!, $password: String!) {
+    login(username: $username, password: $password) {
+      username
+      email
+
       token
     }
   }

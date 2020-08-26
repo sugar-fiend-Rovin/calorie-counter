@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { NavDropdown, Nav } from "react-bootstrap";
 import { NavHashLink as NavLink } from "react-router-hash-link";
 import Navbar from "react-bootstrap/Navbar";
+import { AuthContext } from "../context/auth";
 
 function Header() {
+  const { user, logout } = useContext(AuthContext);
+
   const pathname = window.location.pathname;
 
   const path = pathname === "/" ? "home" : pathname.substr(1);
@@ -12,7 +15,30 @@ function Header() {
 
   const handleItemClick = (e, { name }) => setActiveItem(name);
 
-  return (
+  const menuBar = user ? (
+    <Navbar collapseOnSelect expand="lg" variant="dark">
+      <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+      <Navbar.Collapse id="responsive-navbar-nav">
+        <Nav className="mr-auto">
+          <NavLink
+            smooth
+            to="/"
+            activeClassName="selected"
+            style={{ color: "black", marginRight: "10px" }}
+          >
+            {user.username}
+          </NavLink>
+          <button
+            class="btn btn-outline-success my-2 my-sm-0"
+            type="button"
+            onClick={logout}
+          >
+            logout
+          </button>
+        </Nav>
+      </Navbar.Collapse>
+    </Navbar>
+  ) : (
     // <Menu pointing secondary size="massive" color="teal">
     //   <Menu.Item
     //     name="home"
@@ -72,6 +98,7 @@ function Header() {
       </Navbar.Collapse>
     </Navbar>
   );
+  return menuBar;
 }
 
 export default Header;

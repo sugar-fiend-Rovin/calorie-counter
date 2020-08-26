@@ -10,13 +10,15 @@ import Example from "./button";
 import Journal from "./journal";
 // import { route } from "../../server/src/routes/api/auth";
 // import useScript from "./components/useScript";
+import "./home.css";
+import { Container, Row, Col, Form, Button } from "react-bootstrap";
+
 import Login from "./login";
 import Header from "./Header";
 import Register from "./register";
 export const ItemsContext = React.createContext();
 export const JournalContext = React.createContext();
-
-function Home() {
+function Home(props) {
   //   const [user, setUser] = useState();
 
   //   useEffect(() => {
@@ -37,6 +39,9 @@ function Home() {
   //     setCurrent(newarray);
   //   }
   // }, [loading, data]);
+  const da = localStorage.getItem("token");
+  console.log("HEEEEEEEEE");
+  console.log(da);
   const getAllUsers = useQuery(FoodQuery);
   const [count, setCount] = useState(moment());
   function handleChange(newValue) {
@@ -48,12 +53,21 @@ function Home() {
   const { loading, error, data } = useQuery(EntryQuery, {
     variables: { date: count.format("MM-DD-YYYY") },
     pollInterval: 0.0001,
+    context: {
+      headers: {
+        authentication: `Bearer ${localStorage.getItem("token")}`,
+      },
+    },
   });
 
   if (loading) return null;
-  if (error) return `Error! ${error}`;
+  if (error) {
+    console.log(error);
+    return `Error! ${error}`;
+  }
 
   const newarray = data.getEntries.map((entry) => entry.food_en.food_name);
+
   return (
     //refetch
     <div className="App">
@@ -79,7 +93,7 @@ function Home() {
         {({ loading, error, data }) => {
           if (loading) return <h4>Loading...</h4>;
           if (error) console.log(error);
-          // console.log(count.format("ddd DD-MM-YYYY"));
+          console.log(data);
 
           const breakfast = data.getFoods.filter(
             (food) =>
@@ -157,13 +171,27 @@ function Home() {
                 <div className="col-sm-2 "></div>
                 <div className="col-sm-2">{breakfast_sum}</div>
               </div> */}
-              <div
-                className="row text-white"
-                style={{ backgroundColor: "blue" }}
+              <Row
+                className="text-white text-center border-col align-items-center"
+                style={{
+                  backgroundColor: "green",
+                  height: "50px",
+                }}
               >
-                breakfast
-              </div>
-              ;
+                <Col>Today's Menu</Col>
+              </Row>
+              <Row
+                className="text-white border-col align-items-center"
+                style={{ backgroundColor: "blue", height: "50px" }}
+              >
+                <Col>breakfast</Col>
+                <Col></Col>
+                <Col></Col>
+                <Col></Col>
+                <Col></Col>
+                <Col></Col>
+              </Row>
+
               {breakfast.map((food) => (
                 <FoodItem
                   key={food.id}
@@ -181,6 +209,17 @@ function Home() {
                 <div className="col-sm-2 "></div>
                 <div className="col-sm-2">{lunch_sum}</div>
               </div> */}
+              <Row
+                className="text-white border-col align-items-center"
+                style={{ backgroundColor: "blue", height: "50px" }}
+              >
+                <Col>lunch</Col>
+                <Col></Col>
+                <Col></Col>
+                <Col></Col>
+                <Col></Col>
+                <Col></Col>
+              </Row>
               {lunch.map((food) => (
                 <FoodItem
                   key={food.id}
@@ -198,6 +237,17 @@ function Home() {
                 <div className="col-sm-2 "></div>
                 <div className="col-sm-2">{dinner_sum}</div>
               </div> */}
+              <Row
+                className="text-white border-col align-items-center"
+                style={{ backgroundColor: "blue", height: "50px" }}
+              >
+                <Col>dinner</Col>
+                <Col></Col>
+                <Col></Col>
+                <Col></Col>
+                <Col></Col>
+                <Col></Col>
+              </Row>
               {dinner.map((food) => (
                 <FoodItem
                   key={food.id}

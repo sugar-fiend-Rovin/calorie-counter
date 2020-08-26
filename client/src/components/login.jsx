@@ -1,71 +1,80 @@
-import React, { useState } from "react";
-import { Button, Form } from "semantic-ui-react";
-import { useMutation, useContext } from "@apollo/client";
-// import Form from "react-bootstrap/Form";
+import React, { useState, useContext } from "react";
+import { useMutation } from "@apollo/client";
+import { Row, Col, Form, Button } from "react-bootstrap";
 import { useForm } from "../util/hooks";
 // import Button from "react-bootstrap/Button";
 import { LOGIN_USER } from "../Food-Query";
+import { AuthContext } from "../context/auth";
+import { NavHashLink as NavLink } from "react-router-hash-link";
+import { useLazyQuery } from "@apollo/client";
 
-function Login(props) {
-  const [errors, setErrors] = useState({});
-
-  const { onChange, onSubmit, values } = useForm(loginUserCallback, {
+export default function Register(props) {
+  const [variables, setVariables] = useState({
     username: "",
     password: "",
   });
+  const [errors, setErrors] = useState({});
 
-  const [loginUser, { loading }] = useMutation(LOGIN_USER, {
-    update(_, result) {
-      props.history.push("/");
-    },
-    onError(err) {
-      console.log(err.graphQLErrors[0].extensions.errors);
+  const [loginUser, { loading }] = useLazyQuery(LOGIN_USER, {
+    onError: (err) => {
+      console.log(err);
       setErrors(err.graphQLErrors[0].extensions.errors);
     },
-    variables: values,
+    onCompleted(data) {
+      localStorage.setItem("token", data.login.token);
+
+      props.history.push("/");
+    },
   });
 
-  function loginUserCallback() {
-    loginUser();
-  }
+  const submitLoginForm = (e) => {
+    e.preventDefault();
+
+    loginUser({ variables });
+  };
 
   return (
-    <div className="form-container">
-      <Form onSubmit={onSubmit} noValidate className={loading ? "loading" : ""}>
-        <h1>Login</h1>
-        <Form.Input
-          label="Username"
-          placeholder="Username.."
-          name="username"
-          type="text"
-          value={values.username}
-          errors={errors.username ? true : false}
-          onChange={onChange}
-        />
-        <Form.Input
-          label="Password"
-          placeholder="Password.."
-          name="password"
-          type="password"
-          value={values.password}
-          errors={errors.password ? true : false}
-          onChange={onChange}
-        />
-        <Button type="submit" primary>
-          Login
-        </Button>
-      </Form>
-      {Object.keys(errors).length > 0 && (
-        <div className="ui error message">
-          <ul className="list">
-            {Object.values(errors).map((value) => (
-              <li key={value}>{value}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </div>
+    <Row className="bg-white py-5 justify-content-center">
+      <Col sm={8} md={6} lg={4}>
+        <h1 className="text-center">Login</h1>
+        <Form onSubmit={submitLoginForm}>
+          <Form.Group>
+            <Form.Label className={errors.username && "text-danger"}>
+              {errors.username ?? "Username"}
+            </Form.Label>
+            <Form.Control
+              type="text"
+              value={variables.username}
+              className={errors.username && "is-invalid"}
+              onChange={(e) =>
+                setVariables({ ...variables, username: e.target.value })
+              }
+            />
+          </Form.Group>
+          <Form.Group>
+            <Form.Label className={errors.password && "text-danger"}>
+              {errors.password ?? "Password"}
+            </Form.Label>
+            <Form.Control
+              type="password"
+              value={variables.password}
+              className={errors.password && "is-invalid"}
+              onChange={(e) =>
+                setVariables({ ...variables, password: e.target.value })
+              }
+            />
+          </Form.Group>
+          <div className="text-center">
+            <Button variant="success" type="submit" disabled={loading}>
+              {loading ? "loading.." : "Login"}
+            </Button>
+            <br />
+            <small>
+              Don't have an account? <NavLink to="/register">Register</NavLink>
+            </small>
+          </div>
+        </Form>
+      </Col>
+    </Row>
   );
 }
-
-export default Login;

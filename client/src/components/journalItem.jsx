@@ -2,7 +2,9 @@ import React from "react";
 // import { Link } from "react-router-dom";
 import { useMutation } from "@apollo/client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faMinus, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { Container, Row, Col, Form, Button } from "react-bootstrap";
+import "./journalItem.css";
 import {
   EntryQuery,
   FoodQueryS,
@@ -48,33 +50,65 @@ export default function JournalItem({
   );
 
   return (
-    <div className="row">
-      <div className="col-sm-1 ">{food_name}</div>
-      <div className="col-sm-1 ">{carbohydrates}</div>
-      <div className="col-sm-1 ">{fats}</div>
-      <div className="col-sm-1 ">{proteins}</div>
-      <div className="col-sm-1 ">{calories}</div>
-      <div className="col-sm-1 ">{count}</div>
-      <button
-        type="button"
-        onClick={() =>
-          minusQuantity({ variables: { food_entry: food_name, date: date } })
-        }
-        className="btn btn-primary btn-lg active"
-      >
-        {" "}
-        <FontAwesomeIcon icon={faMinus} />
-      </button>
-      <button
-        type="button"
-        onClick={() =>
-          addQuantity({ variables: { food_entry: food_name, date: date } })
-        }
-        className="btn btn-primary btn-lg active"
-      >
-        {" "}
-        <FontAwesomeIcon icon={faPlus} />
-      </button>
-    </div>
+    <Row className=" align-items-center border-col " style={{ height: "50px" }}>
+      <Col>{food_name}</Col>
+      <Col>{carbohydrates * count}</Col>
+      <Col>{fats * count}</Col>
+      <Col>{proteins * count}</Col>
+      <Col>{calories * count}</Col>
+      <Col>
+        <Button
+          variant="primary"
+          onClick={() =>
+            minusQuantity({
+              variables: { food_entry: food_name, date: date },
+              context: {
+                headers: {
+                  authentication: `Bearer ${localStorage.getItem("token")}`,
+                },
+              },
+            })
+          }
+        >
+          <FontAwesomeIcon icon={faMinus} />
+        </Button>
+        {count}
+
+        <Button
+          style={{ marginRight: "30px" }}
+          variant="primary"
+          onClick={() =>
+            addQuantity({
+              variables: { food_entry: food_name, date: date },
+              context: {
+                headers: {
+                  authentication: `Bearer ${localStorage.getItem("token")}`,
+                },
+              },
+            })
+          }
+        >
+          <FontAwesomeIcon icon={faPlus} />
+        </Button>
+        <Button
+          variant="danger"
+          onClick={() =>
+            deleteEntry({
+              variables: {
+                food_entry: food_name,
+                date: date,
+              },
+              context: {
+                headers: {
+                  authentication: `Bearer ${localStorage.getItem("token")}`,
+                },
+              },
+            })
+          }
+        >
+          <FontAwesomeIcon icon={faTimes} />
+        </Button>
+      </Col>
+    </Row>
   );
 }

@@ -1,8 +1,18 @@
 const mongoose = require("mongoose");
-const User = mongoose.model("users", {
-  username: String,
+const User = mongoose.model("usersj", {
+  username: { type: String, unique: true, dropDups: true },
   password: String,
-  email: String,
+  email: {
+    type: String,
+    unique: true,
+    dropDups: true,
+    validate: {
+      validator: function (email) {
+        return /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/.test(email);
+      },
+      message: `not a valid email`,
+    },
+  },
 });
 
 const Food = mongoose.model("menu-items", {

@@ -1,0 +1,9 @@
+.border-col {
+  border: 1px dotted grey;
+  border-bottom: 0;
+  border-radius: 4px;
+}
+.border-col:last-child {
+  border: 1px dotted grey;
+  border-radius: 4px;
+}

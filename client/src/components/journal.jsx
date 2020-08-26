@@ -14,6 +14,8 @@ import {
   MinusQuantity,
   DeleteEntry,
 } from "../Food-Query";
+import { Container, Row, Col, Form, Button } from "react-bootstrap";
+import "./journal.css";
 import moment from "moment";
 import { ItemsContext } from "./home";
 import JournalItem from "./journalItem";
@@ -23,10 +25,18 @@ function Journal(props) {
   const { loading, error, data } = useQuery(EntryQuery, {
     variables: { date: count.format("MM-DD-YYYY") },
     pollInterval: 0.0001,
+    context: {
+      headers: {
+        authentication: `Bearer ${localStorage.getItem("token")}`,
+      },
+    },
   });
 
   if (loading) return "Loading...";
-  if (error) return `Error! ${error.message}`;
+  if (error) {
+    return `Error! ${error.message}`;
+  }
+
   const breakfast = data.getEntries.filter(
     (food) =>
       food.food_en.type === "breakfast" &&
@@ -66,27 +76,44 @@ function Journal(props) {
                 <div className="col-sm-2 ">{sum(proteins)}</div>
                 <div className="col-sm-2 ">{sum(calories)}</div>
               </div> */}
-      <div className="row">
-        <div className="col-sm-2 "></div>
-        <div className="col-sm-2 ">carbohydrates</div>
-        <div className="col-sm-2 ">fats</div>
-        <div className="col-sm-2 ">proteins</div>
-        <div className="col-sm-2 ">calories</div>
-      </div>
-      <div className="row text-white" style={{ backgroundColor: "grey" }}>
-        <div className="col-sm-2">total</div>
-        <div className="col-sm-2 ">{total_carbs}</div>
-        <div className="col-sm-2 ">{total_fat}</div>
-        <div className="col-sm-2 ">{total_protein}</div>
-        <div className="col-sm-2">{total_calories}</div>
-      </div>
-      <div className="row text-white" style={{ backgroundColor: "blue" }}>
-        <div className="col-sm-2">breakfast</div>
-        <div className="col-sm-2 "></div>
-        <div className="col-sm-2 "></div>
-        <div className="col-sm-2 "></div>
-        <div className="col-sm-2">{breakfast_sum}</div>
-      </div>
+      <Row className="border-col align-items-center" style={{ height: "50px" }}>
+        <Col className="" style={{}}></Col>
+        <Col className="" style={{}}>
+          carbohydrates
+        </Col>
+        <Col className="" style={{}}>
+          fats
+        </Col>
+        <Col className="" style={{}}>
+          proteins
+        </Col>
+        <Col className="" style={{}}>
+          calories
+        </Col>
+        <Col className="" style={{}}></Col>
+      </Row>
+      <Row
+        className="text-white border-col align-items-center"
+        style={{ backgroundColor: "grey", height: "50px" }}
+      >
+        <Col>total</Col>
+        <Col>{total_carbs}</Col>
+        <Col>{total_fat}</Col>
+        <Col>{total_protein}</Col>
+        <Col>{total_calories}</Col>
+        <Col></Col>
+      </Row>
+      <Row
+        className="text-white border-col align-items-center"
+        style={{ backgroundColor: "blue", height: "50px" }}
+      >
+        <Col>breakfast</Col>
+        <Col></Col>
+        <Col></Col>
+        <Col></Col>
+        <Col>{breakfast_sum}</Col>
+        <Col></Col>
+      </Row>
 
       {breakfast.map((food) => (
         <JournalItem
@@ -96,13 +123,17 @@ function Journal(props) {
           date={count.format("MM-DD-YYYY")}
         />
       ))}
-      <div className="row text-white" style={{ backgroundColor: "blue" }}>
-        <div className="col-sm-2">lunch</div>
-        <div className="col-sm-2 "></div>
-        <div className="col-sm-2 "></div>
-        <div className="col-sm-2 "></div>
-        <div className="col-sm-2">{lunch_sum}</div>
-      </div>
+      <Row
+        className="text-white border-col align-items-center"
+        style={{ backgroundColor: "blue", height: "50px" }}
+      >
+        <Col>lunch</Col>
+        <Col></Col>
+        <Col></Col>
+        <Col></Col>
+        <Col>{lunch_sum}</Col>
+        <Col></Col>
+      </Row>
 
       {lunch.map((food) => (
         <JournalItem
@@ -112,13 +143,17 @@ function Journal(props) {
           date={count.format("MM-DD-YYYY")}
         />
       ))}
-      <div className="row text-white" style={{ backgroundColor: "blue" }}>
-        <div className="col-sm-2">dinner</div>
-        <div className="col-sm-2 "></div>
-        <div className="col-sm-2 "></div>
-        <div className="col-sm-2 "></div>
-        <div className="col-sm-2">{dinner_sum}</div>
-      </div>
+      <Row
+        className="text-white border-col align-items-center"
+        style={{ backgroundColor: "blue", height: "50px" }}
+      >
+        <Col>dinner</Col>
+        <Col></Col>
+        <Col></Col>
+        <Col></Col>
+        <Col>{dinner_sum}</Col>
+        <Col></Col>
+      </Row>
 
       {dinner.map((food) => (
         <JournalItem
