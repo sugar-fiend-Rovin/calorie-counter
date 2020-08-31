@@ -1,65 +1,53 @@
-import React, { useReducer, createContext } from "react";
+import React, { createContext, useReducer, useContext } from "react";
 import jwtDecode from "jwt-decode";
 
-const initialState = {
-  user: null,
-};
+const AuthStateContext = createContext();
+const AuthDispatchContext = createContext();
 
-if (localStorage.getItem("jwtToken")) {
-  const decodedToken = jwtDecode(localStorage.getItem("jwtToken"));
+let user = null;
+const token = localStorage.getItem("token");
+if (token) {
+  const decodedToken = jwtDecode(token);
+  const expiresAt = new Date(decodedToken.exp * 1000);
 
-  if (decodedToken.exp * 1000 < Date.now()) {
-    localStorage.removeItem("jwtToken");
+  if (new Date() > expiresAt) {
+    localStorage.removeItem("token");
+    console.log("expired");
   } else {
-    initialState.user = decodedToken;
+    user = decodedToken;
   }
-}
+} else console.log("No token found");
 
-const AuthContext = createContext({
-  user: null,
-  login: (userData) => {},
-  logout: () => {},
-});
-
-function authReducer(state, action) {
+const authReducer = (state, action) => {
   switch (action.type) {
     case "LOGIN":
+      localStorage.setItem("token", action.payload.token);
       return {
         ...state,
         user: action.payload,
       };
     case "LOGOUT":
+      localStorage.removeItem("token");
       return {
         ...state,
         user: null,
       };
     default:
-      return state;
+      throw new Error(`Unknown action type: ${action.type}`);
   }
-}
+};
 
-function AuthProvider(props) {
-  const [state, dispatch] = useReducer(authReducer, initialState);
-
-  function login(userData) {
-    localStorage.setItem("jwtToken", userData.token);
-    dispatch({
-      type: "LOGIN",
-      payload: userData,
-    });
-  }
-
-  function logout() {
-    localStorage.removeItem("jwtToken");
-    dispatch({ type: "LOGOUT" });
-  }
+export const AuthProvider = ({ children }) => {
+  const [state, dispatch] = useReducer(authReducer, { user });
 
   return (
-    <AuthContext.Provider
-      value={{ user: state.user, login, logout }}
-      {...props}
-    />
+    <AuthDispatchContext.Provider value={dispatch}>
+      <AuthStateContext.Provider value={state}>
+        {children}
+      </AuthStateContext.Provider>
+    </AuthDispatchContext.Provider>
   );
-}
+};
 
-export { AuthContext, AuthProvider };
+export const useAuthState = () => useContext(AuthStateContext);
+export const useAuthDispatch = () => useContext(AuthDispatchContext);

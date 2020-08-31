@@ -22,21 +22,25 @@ import { AuthProvider } from "./context/auth";
 import AuthRoute from "./util/AuthRoute";
 import { Container } from "react-bootstrap";
 import Chart from "./components/chart";
+import DynamicRoute from "./util/DynamicRoute";
+import SetG from "./components/setGoal";
 export const ItemsContext = React.createContext();
 export const JournalContext = React.createContext();
 
 function App() {
   return (
-    <BrowserRouter>
-      <Container className="pt-5">
-        <Switch>
-          <Route exact path="/" component={Home} />
-          <Route path="/register" component={Register} />
-          <Route path="/login" component={Login} />
-          <Route path="/chart" component={Chart} />
-        </Switch>
-      </Container>
-    </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter>
+        <Container className="pt-5">
+          <Switch>
+            <DynamicRoute exact path="/" component={Home} authenticated />
+            <DynamicRoute path="/register" component={Register} guest />
+            <DynamicRoute path="/login" component={Login} guest />
+            <Route path="/set" component={SetG} />
+          </Switch>
+        </Container>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 

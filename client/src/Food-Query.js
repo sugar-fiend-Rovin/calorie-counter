@@ -13,9 +13,15 @@ const FoodQueryS = gql`
   }
 `;
 const UserQuery = gql`
-  query($name: String!) {
-    getUser(username: $name) {
+  query {
+    getUser {
+      id
+      email
       username
+      daily_calories
+      carbohydrates
+      proteins
+      fats
     }
   }
 `;
@@ -142,9 +148,23 @@ const MinusQuantity = gql`
 //     }
 //   }
 // `;
-
+const SetGoals = gql`
+  mutation($carbs: Float!, $fats: Float!, $protein: Float!, $kcal: Float!) {
+    updateUserGoals(
+      carbs: $carbs
+      fats: $fats
+      protein: $protein
+      kcal: $kcal
+    ) {
+      daily_calories
+      carbohydrates
+      proteins
+      fats
+    }
+  }
+`;
 const REGISTER_USER = gql`
-  mutation register(
+  mutation(
     $username: String!
     $email: String!
     $password: String!
@@ -166,7 +186,6 @@ const LOGIN_USER = gql`
     login(username: $username, password: $password) {
       username
       email
-
       token
     }
   }
@@ -183,6 +202,7 @@ export {
   MinusQuantity,
   // EntryQueryS,
   DeleteEntry,
+  SetGoals,
   LOGIN_USER,
   REGISTER_USER,
 };

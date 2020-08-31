@@ -13,6 +13,10 @@ const User = mongoose.model("usersj", {
       message: `not a valid email`,
     },
   },
+  daily_calories: Number,
+  carbohydrates: Number,
+  proteins: Number,
+  fats: Number,
 });
 
 const Food = mongoose.model("menu-items", {

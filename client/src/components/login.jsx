@@ -7,6 +7,7 @@ import { LOGIN_USER } from "../Food-Query";
 import { AuthContext } from "../context/auth";
 import { NavHashLink as NavLink } from "react-router-hash-link";
 import { useLazyQuery } from "@apollo/client";
+import { useAuthDispatch } from "../context/auth";
 
 export default function Register(props) {
   const [variables, setVariables] = useState({
@@ -14,6 +15,7 @@ export default function Register(props) {
     password: "",
   });
   const [errors, setErrors] = useState({});
+  const dispatch = useAuthDispatch();
 
   const [loginUser, { loading }] = useLazyQuery(LOGIN_USER, {
     onError: (err) => {
@@ -21,7 +23,8 @@ export default function Register(props) {
       setErrors(err.graphQLErrors[0].extensions.errors);
     },
     onCompleted(data) {
-      localStorage.setItem("token", data.login.token);
+      console.log(data);
+      dispatch({ type: "LOGIN", payload: data.login });
 
       props.history.push("/");
     },

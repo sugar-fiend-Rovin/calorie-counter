@@ -1,9 +1,10 @@
-import React, { Fragment, useState, useContext } from "react";
+import React, { Fragment, useState, useContext, useEffect } from "react";
 import { graphql } from "@apollo/client/react/hoc";
 import * as compose from "lodash.flowright";
 import { Query, Mutation, Subscription } from "@apollo/client/react/components";
-import { useQuery } from "@apollo/client";
+import { useQuery, useLazyQuery } from "@apollo/client";
 import {
+  UserQuery,
   EntryQuery,
   FoodQueryS,
   EntryQueryS,
@@ -19,23 +20,28 @@ import "./journal.css";
 import moment from "moment";
 import { ItemsContext } from "./home";
 import JournalItem from "./journalItem";
+import { useAuthDispatch } from "../context/auth";
+import UserStats from "./userStats";
 function Journal(props) {
   const [count, setCount] = useContext(ItemsContext);
-
   const { loading, error, data } = useQuery(EntryQuery, {
     variables: { date: count.format("MM-DD-YYYY") },
     pollInterval: 0.0001,
-    context: {
-      headers: {
-        authentication: `Bearer ${localStorage.getItem("token")}`,
-      },
-    },
   });
 
   if (loading) return "Loading...";
   if (error) {
     return `Error! ${error.message}`;
   }
+  // if (loading) return "Loading...";
+  // if (error) {
+  //   return `Error! ${error.message}`;
+  // }
+
+  // if (landingR) return "Loading...";
+  // if (errorR) {
+  //   console.log(errorR);
+  // }
 
   const breakfast = data.getEntries.filter(
     (food) =>
@@ -85,13 +91,44 @@ function Journal(props) {
           fats
         </Col>
         <Col className="" style={{}}>
-          proteins
+          protein
         </Col>
         <Col className="" style={{}}>
           calories
         </Col>
         <Col className="" style={{}}></Col>
       </Row>
+      <Query query={UserQuery}>
+        {({ loading, error, data }) => {
+          if (loading) return <h4>Loading...</h4>;
+          if (error) console.log(error);
+          console.log(data.getUser);
+
+          return (
+            <Row
+              className="text-white border-col align-items-center"
+              style={{ backgroundColor: "red", height: "50px" }}
+            >
+              <Col>daily goal</Col>
+
+              <Col>
+                {data.getUser.carbohydrates ? data.getUser.carbohydrates : "--"}
+              </Col>
+              <Col>{data.getUser.fats ? data.getUser.fats : "--"}</Col>
+              <Col>{data.getUser.proteins ? data.getUser.proteins : "--"}</Col>
+              <Col
+                className={data.getUser.daily_calories > 0 ? "text-danger" : ""}
+              >
+                {data.getUser.daily_calories
+                  ? data.getUser.daily_calories
+                  : "--"}
+              </Col>
+              <Col></Col>
+            </Row>
+          );
+        }}
+      </Query>
+      {/* <UserStats /> */}
       <Row
         className="text-white border-col align-items-center"
         style={{ backgroundColor: "grey", height: "50px" }}
@@ -114,7 +151,6 @@ function Journal(props) {
         <Col>{breakfast_sum}</Col>
         <Col></Col>
       </Row>
-
       {breakfast.map((food) => (
         <JournalItem
           key={food.food_en.id}
@@ -134,7 +170,6 @@ function Journal(props) {
         <Col>{lunch_sum}</Col>
         <Col></Col>
       </Row>
-
       {lunch.map((food) => (
         <JournalItem
           key={food.food_en.id}
@@ -154,7 +189,6 @@ function Journal(props) {
         <Col>{dinner_sum}</Col>
         <Col></Col>
       </Row>
-
       {dinner.map((food) => (
         <JournalItem
           key={food.food_en.id}

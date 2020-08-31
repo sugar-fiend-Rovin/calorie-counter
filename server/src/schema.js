@@ -1,7 +1,7 @@
 const typeDefs = `type Query {
     getFood(    food_name: String!): Food
     getFoods: [Food]!
-    getUser: String!
+    getUser: User!
     getEntries(date:String!): [Entry]
     login(username: String! password: String!): User!
   }
@@ -10,6 +10,10 @@ const typeDefs = `type Query {
     email: String!
     token: String!
     username: String!
+    daily_calories: Float
+    carbohydrates: Float
+    proteins: Float
+    fats: Float
   }
   type Food {
     food_name: String!,
@@ -53,6 +57,7 @@ const typeDefs = `type Query {
       updateEntryMinus(
         food_entry: String!, date: String!): Entry
       deleteEntry(food_entry: String!, date: String!): String!
+      updateUserGoals(carbs: Float!, fats: Float!, protein: Float!, kcal: Float!): User!
       register(
         username: String!
         email: String!

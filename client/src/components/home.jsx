@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { useQuery } from "@apollo/client";
+import { useQuery, useLazyQuery } from "@apollo/client";
 import * as compose from "lodash.flowright";
 import { Query, Mutation, Subscription } from "@apollo/client/react/components";
 import "bootstrap/dist/css/bootstrap.css";
@@ -8,17 +8,25 @@ import FoodItem from "./foodItem";
 import moment from "moment";
 import Example from "./button";
 import Journal from "./journal";
+import { Link } from "react-router-dom";
+
 // import { route } from "../../server/src/routes/api/auth";
 // import useScript from "./components/useScript";
 import "./home.css";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
+import { useAuthDispatch } from "../context/auth";
 
 import Login from "./login";
 import Header from "./Header";
 import Register from "./register";
 export const ItemsContext = React.createContext();
 export const JournalContext = React.createContext();
-function Home(props) {
+function Home({ history }) {
+  const dispatch = useAuthDispatch();
+  const logout = () => {
+    dispatch({ type: "LOGOUT" });
+    history.push("/login");
+  };
   //   const [user, setUser] = useState();
 
   //   useEffect(() => {
@@ -39,38 +47,39 @@ function Home(props) {
   //     setCurrent(newarray);
   //   }
   // }, [loading, data]);
-  const da = localStorage.getItem("token");
-  console.log("HEEEEEEEEE");
-  console.log(da);
-  const getAllUsers = useQuery(FoodQuery);
+
   const [count, setCount] = useState(moment());
   function handleChange(newValue) {
     setCount(newValue);
   }
   // add usernmae as paramter
 
-  //   console.log(user);
   const { loading, error, data } = useQuery(EntryQuery, {
     variables: { date: count.format("MM-DD-YYYY") },
     pollInterval: 0.0001,
-    context: {
-      headers: {
-        authentication: `Bearer ${localStorage.getItem("token")}`,
-      },
-    },
   });
 
   if (loading) return null;
   if (error) {
-    console.log(error);
     return `Error! ${error}`;
   }
-
   const newarray = data.getEntries.map((entry) => entry.food_en.food_name);
 
   return (
     //refetch
+
     <div className="App">
+      <Row className="bg-white justify-content-around mb-1">
+        <Link to="/login">
+          <Button variant="link">Login</Button>
+        </Link>
+        <Link to="/register">
+          <Button variant="link">Register</Button>
+        </Link>
+        <Button variant="link" onClick={logout}>
+          Logout
+        </Button>
+      </Row>
       <ItemsContext.Provider value={[count, setCount]}>
         <Example />
         <Journal />

@@ -7,20 +7,20 @@ const { AuthenticationError } = require("apollo-server");
 
 const { UserInputError } = require("apollo-server");
 
-function generateToken(user) {
-  console.log(config.get("jwtSecret"));
-  return jwt.sign(
-    {
-      id: user.id,
-      email: user.email,
-      username: user.username,
-    },
-    config.get("jwtSecret"),
-    { expiresIn: "1h" }
-  );
-}
 const resolvers = {
   Query: {
+    getUser: async (_, __, user) => {
+      try {
+        if (!user) throw new AuthenticationError("Unauthenticated");
+
+        var result = await User.findOne({
+          username: user.user.username,
+        });
+        return result;
+      } catch (err) {
+        throw err;
+      }
+    },
     getEntries: async (_, { date }, user) => {
       try {
         if (!user) throw new AuthenticationError("Unauthenticated");
@@ -29,6 +29,7 @@ const resolvers = {
           username: user.user.username,
           date: date,
         });
+
         return result;
       } catch (err) {
         throw err;
@@ -122,6 +123,7 @@ const resolvers = {
     createEntry: async (_, { date, food_entry, quantity }, user) => {
       try {
         if (!user) throw new AuthenticationError("Unauthenticated");
+        console.log(user);
 
         const entry = new Entry({
           username: user.user.username,
@@ -185,7 +187,27 @@ const resolvers = {
         throw err;
       }
     },
+    updateUserGoals: async (_, { carbs, fats, protein, kcal }, user) => {
+      try {
+        if (!user) throw new AuthenticationError("Unauthenticated");
 
+        return await User.findOneAndUpdate(
+          { username: user.user.username },
+          {
+            daily_calories: kcal,
+            carbohydrates: carbs,
+            proteins: protein,
+            fats: fats,
+          },
+          {
+            new: true,
+          }
+        );
+      } catch (err) {
+        console.log(err);
+        throw err;
+      }
+    },
     // Handle user signup
 
     register: async (_, args) => {
