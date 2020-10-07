@@ -24,14 +24,15 @@ export default function UserStats(props) {
       style={{ backgroundColor: "red", height: "50px" }}
     >
       <Col>daily goal</Col>
-      <Col>
-        {data.getUser.daily_calories ? data.getUser.daily_calories : "--"}
-      </Col>
+
       <Col>
         {data.getUser.carbohydrates ? data.getUser.carbohydrates : "--"}
       </Col>
       <Col>{data.getUser.fats ? data.getUser.fats : "--"}</Col>
       <Col>{data.getUser.proteins ? data.getUser.proteins : "--"}</Col>
+      <Col>
+        {data.getUser.daily_calories ? data.getUser.daily_calories : "--"}
+      </Col>
       <Col></Col>
     </Row>
   );

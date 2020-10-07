@@ -105,41 +105,52 @@ function Journal(props) {
           console.log(data.getUser);
 
           return (
-            <Row
-              className="text-white border-col align-items-center"
-              style={{ backgroundColor: "red", height: "50px" }}
-            >
-              <Col>daily goal</Col>
-
-              <Col>
-                {data.getUser.carbohydrates ? data.getUser.carbohydrates : "--"}
-              </Col>
-              <Col>{data.getUser.fats ? data.getUser.fats : "--"}</Col>
-              <Col>{data.getUser.proteins ? data.getUser.proteins : "--"}</Col>
-              <Col
-                className={data.getUser.daily_calories > 0 ? "text-danger" : ""}
+            <div>
+              <Row
+                className="text-white border-col align-items-center"
+                style={{ backgroundColor: "red", height: "50px" }}
               >
-                {data.getUser.daily_calories
-                  ? data.getUser.daily_calories
-                  : "--"}
-              </Col>
-              <Col></Col>
-            </Row>
+                <Col>daily goal</Col>
+
+                <Col>
+                  {data.getUser.carbohydrates
+                    ? data.getUser.carbohydrates
+                    : "--"}
+                </Col>
+                <Col>{data.getUser.fats ? data.getUser.fats : "--"}</Col>
+                <Col>
+                  {data.getUser.proteins ? data.getUser.proteins : "--"}
+                </Col>
+                <Col>
+                  {data.getUser.daily_calories
+                    ? data.getUser.daily_calories
+                    : "--"}
+                </Col>
+                <Col></Col>
+              </Row>
+              <Row
+                className="text-white border-col align-items-center"
+                style={{ backgroundColor: "grey", height: "50px" }}
+              >
+                <Col
+                  className={
+                    data.getUser.daily_calories > 0 ? "text-danger" : ""
+                  }
+                >
+                  total
+                </Col>
+                <Col>{total_carbs}</Col>
+                <Col>{total_fat}</Col>
+                <Col>{total_protein}</Col>
+                <Col>{total_calories}</Col>
+                <Col></Col>
+              </Row>
+            </div>
           );
         }}
       </Query>
       {/* <UserStats /> */}
-      <Row
-        className="text-white border-col align-items-center"
-        style={{ backgroundColor: "grey", height: "50px" }}
-      >
-        <Col>total</Col>
-        <Col>{total_carbs}</Col>
-        <Col>{total_fat}</Col>
-        <Col>{total_protein}</Col>
-        <Col>{total_calories}</Col>
-        <Col></Col>
-      </Row>
+
       <Row
         className="text-white border-col align-items-center"
         style={{ backgroundColor: "blue", height: "50px" }}

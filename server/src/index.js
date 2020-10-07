@@ -1,19 +1,22 @@
 const { GraphQLServer } = require("graphql-yoga");
 const typeDefs = require("./schema");
 const resolvers = require("./resolvers");
+require("dotenv").config();
+
 const config = require("config");
 const mongoose = require("mongoose");
 const express = require("express");
-const db = config.get("mongoURI");
+const db = process.env.mongoURI;
 const jwt = require("express-jwt");
 const { AuthenticationError } = require("apollo-server");
 const contextMiddleware = require("./util/contextMiddleware");
+console.log(process.env);
 mongoose.connect(db, {
   useNewUrlParser: true,
   useFindAndModify: false,
   useCreateIndex: true,
 });
-const port = process.env.Port || 5000;
+const port = process.env.Port;
 
 const server = new GraphQLServer({
   typeDefs,

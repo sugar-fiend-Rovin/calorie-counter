@@ -2,6 +2,7 @@ const { Food, User, Entry } = require("./models");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const config = require("config");
+require("dotenv").config();
 
 const { AuthenticationError } = require("apollo-server");
 
@@ -79,7 +80,7 @@ const resolvers = {
           throw new UserInputError("password is incorrect", { errors });
         }
 
-        const token = jwt.sign({ username }, config.get("jwtSecret"), {
+        const token = jwt.sign({ username }, process.env.jwtSecret, {
           expiresIn: 60 * 60,
         });
 
