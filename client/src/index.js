@@ -31,7 +31,7 @@ const authLink = setContext((_, { headers }) => {
 });
 
 const client = new ApolloClient({
-  link: authLink.concat(httpLink),
+  link: authLink.concat("http://sugar-fiend-Rovin.github.io/calorie-counter"),
   cache: new InMemoryCache(),
 });
 
