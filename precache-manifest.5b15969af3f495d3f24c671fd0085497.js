@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "2c2b0981f521ac16b6df46a51c1065f0",
+    "revision": "1ea2ad049324cff9b1ad4bfc2c9b847b",
     "url": "/calorie-counter/index.html"
   },
   {
@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/calorie-counter/static/css/2.4e892ccd.chunk.css"
   },
   {
-    "revision": "094c8bfc5589b1c7be67",
+    "revision": "aa64ade179b367fef854",
     "url": "/calorie-counter/static/css/main.b617b2c2.chunk.css"
   },
   {
@@ -20,8 +20,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/calorie-counter/static/js/2.04c61f0b.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "094c8bfc5589b1c7be67",
-    "url": "/calorie-counter/static/js/main.197d3f74.chunk.js"
+    "revision": "aa64ade179b367fef854",
+    "url": "/calorie-counter/static/js/main.65b1c149.chunk.js"
   },
   {
     "revision": "2db01e88e17e6544412a",
