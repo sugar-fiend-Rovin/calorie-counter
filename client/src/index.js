@@ -16,7 +16,7 @@ import { InMemoryCache } from "@apollo/client/cache";
 import { setContext } from "@apollo/client/link/context";
 
 const httpLink = createHttpLink({
-  uri: "http://sugar-fiend-Rovin.github.io/calorie-counter",
+  uri: "https://calorie-tracker-backend.herokuapp.com/",
 });
 const authLink = setContext((_, { headers }) => {
   // get the authentication token from local storage if it exists
@@ -31,7 +31,7 @@ const authLink = setContext((_, { headers }) => {
 });
 
 const client = new ApolloClient({
-  link: authLink.concat("http://sugar-fiend-Rovin.github.io/calorie-counter"),
+  link: authLink.concat(httpLink),
   cache: new InMemoryCache(),
 });
 
