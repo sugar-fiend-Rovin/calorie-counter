@@ -33,7 +33,7 @@ function App() {
       <BrowserRouter>
         <Container className="pt-5">
           <Switch>
-            <DynamicRoute exact path="/" component={Home} authenticated />
+            <DynamicRoute exact path="/" component={Login} authenticated />
             <DynamicRoute path="/register" component={Register} guest />
             <DynamicRoute path="/login" component={Login} guest />
             <Route path="/set" component={SetG} />
