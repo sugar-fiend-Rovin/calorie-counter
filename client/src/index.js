@@ -16,7 +16,7 @@ import { InMemoryCache } from "@apollo/client/cache";
 import { setContext } from "@apollo/client/link/context";
 
 const httpLink = createHttpLink({
-  uri: "http://localhost:4000",
+  uri: "http://sugar-fiend-Rovin.github.io/calorie-counter",
 });
 const authLink = setContext((_, { headers }) => {
   // get the authentication token from local storage if it exists
